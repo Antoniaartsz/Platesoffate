@@ -1,0 +1,422 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Plates of Fate — Eeveelution AU</title>
+  <style>
+    :root{
+      --bg:#070607; /* near black */
+      --panel:#1a1718;
+      --muted:#9e918b;
+      --crimson:#a70f1f;
+      --accent:#fff4b0; /* pastel yellow */
+      --glass: rgba(255,255,255,0.03);
+      --card-shadow: 0 8px 24px rgba(0,0,0,0.6);
+      --round:12px;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background:var(--bg);
+      color:#eee;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      line-height:1.4;
+    }/* Container */
+.wrap{max-width:1100px;margin:32px auto;padding:28px}
+
+header{display:flex;gap:18px;align-items:center;margin-bottom:22px}
+.logo{
+  width:96px;height:96px;border-radius:16px;background:linear-gradient(135deg,var(--crimson),#4a1a18);
+  display:flex;align-items:center;justify-content:center;color:var(--accent);font-weight:700;font-size:18px;box-shadow:var(--card-shadow)
+}
+header h1{margin:0;font-size:20px;letter-spacing:1px}
+header p{opacity:0.8;margin:0}
+
+/* About */
+.about{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px;border-radius:12px;margin-bottom:18px;border:1px solid rgba(255,255,255,0.03)}
+
+/* Tabs */
+.tabs{display:flex;gap:8px;margin:18px 0}
+.tab{padding:10px 14px;border-radius:10px;background:var(--glass);border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+.tab.active{background:linear-gradient(180deg, rgba(255,244,176,0.06), rgba(255,244,176,0.02));box-shadow:0 6px 18px rgba(167,15,31,0.12);color:var(--crimson)}
+
+/* Carousel */
+.carousel{position:relative;overflow:hidden;border-radius:12px;padding:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));border:1px solid rgba(255,255,255,0.02);margin-bottom:18px}
+.slides{display:flex;transition:transform 400ms ease}
+.slide{min-width:100%;display:flex;align-items:center;justify-content:center;padding:18px}
+.placeholder{width:100%;height:220px;border-radius:10px;background:linear-gradient(90deg,#2a2a2a,#161616);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:20px}
+.carousel .nav{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:8px}
+.dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.08)}
+.dot.active{background:var(--accent)}
+
+/* Category buttons */
+.cats{display:flex;gap:12px;margin:18px 0}
+.btn{flex:1;padding:14px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.03);cursor:pointer;text-align:center}
+.btn .title{font-weight:700;color:var(--accent)}
+
+/* Pages (SPA) */
+.page{display:none}
+.page.active{display:block}
+
+/* Grid of characters */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}
+.card{position:relative;border-radius:10px;overflow:hidden;background:linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02));border:1px solid rgba(255,255,255,0.03);min-height:200px;cursor:pointer}
+.card .img{height:140px;background:linear-gradient(135deg,#222,#111);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:16px}
+.card .meta{padding:8px}
+.card .name-overlay{position:absolute;left:0;right:0;bottom:0;padding:8px;background:linear-gradient(180deg,rgba(0,0,0,0.0),rgba(0,0,0,0.6));transform:translateY(100%);transition:transform 220ms ease;color:var(--accent);font-weight:700}
+.card:hover .name-overlay{transform:translateY(0)}
+
+/* character detail */
+.detail{padding:16px;border-radius:12px;background:var(--panel);border:1px solid rgba(255,255,255,0.03)}
+.detail .hero-top{display:flex;gap:18px;align-items:flex-start}
+.detail .hero-art{width:320px;height:320px;border-radius:12px;background:linear-gradient(135deg,#111,#2a2a2a);display:flex;align-items:center;justify-content:center;font-size:20;color:var(--muted)}
+.detail .info{flex:1}
+.detail h2{margin-top:0}
+.controls{display:flex;gap:8px;margin-top:12px}
+.small-btn{padding:8px 10px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--accent);cursor:pointer}
+
+/* Minion list */
+.minions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.minion{padding:10px;border-radius:8px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.03)}
+
+footer{margin-top:28px;padding:18px;text-align:center;color:var(--muted)}
+
+/* Responsive */
+@media (max-width:800px){
+  .detail .hero-top{flex-direction:column}
+  .detail .hero-art{width:100%;height:220px}
+}
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">POF</div>
+      <div>
+        <h1>Plates of Fate</h1>
+        <p>A fansite for your Eeveelution AU — placeholders used throughout. Palette: black, crimson & pastel yellow.</p>
+      </div>
+    </header><section class="about">
+  <h3>About</h3>
+  <p id="about-text">"Plates of Fate" is a narrative AU where evolved-forms are bound to Plates — the story interweaves heroes, villains and mysterious minions. Use the tabs below to explore Characters, Places, and Lore. Background image and final art are placeholders you can replace later.</p>
+</section>
+
+<div class="tabs">
+  <div class="tab active" data-tab="characters">Characters</div>
+  <div class="tab" data-tab="places">Places</div>
+  <div class="tab" data-tab="lore">Lore</div>
+</div>
+
+<!-- CAROUSEL area (changes per tab) -->
+<div class="carousel" id="carousel">
+  <div class="slides" id="slides">
+    <div class="slide"><div class="placeholder">Characters: Meet the cast — slide 1</div></div>
+    <div class="slide"><div class="placeholder">Characters: Slide 2 — placeholder art</div></div>
+    <div class="slide"><div class="placeholder">Characters: Slide 3 — placeholder art</div></div>
+  </div>
+  <div class="nav" id="dots"></div>
+</div>
+
+<div class="cats">
+  <div class="btn" id="open-heroes"><div class="title">Heroes</div><div class="desc">5 + 6 (11 total)</div></div>
+  <div class="btn" id="open-villains"><div class="title">Villains</div><div class="desc">6 main villains</div></div>
+  <div class="btn" id="open-side"><div class="title">Side Characters</div><div class="desc">3-4 supporting</div></div>
+</div>
+
+<!-- SPA pages -->
+<main>
+  <!-- Home (index-like) -->
+  <section class="page active" id="home-page">
+    <p style="opacity:0.85">Welcome — click a category above to explore. Use the tabs to switch carousels.</p>
+  </section>
+
+  <!-- Characters page template (will be filled by JS) -->
+  <section class="page" id="characters-page">
+    <h2>Characters</h2>
+    <div class="grid" id="characters-grid"></div>
+  </section>
+
+  <!-- Places page -->
+  <section class="page" id="places-page">
+    <h2>Places</h2>
+    <div class="grid" id="places-grid">
+      <div class="card"><div class="img">Placeholder: The Shattered Vale</div><div class="meta"><div class="name-overlay">The Shattered Vale</div></div></div>
+      <div class="card"><div class="img">Placeholder: Crystal Borough</div><div class="meta"><div class="name-overlay">Crystal Borough</div></div></div>
+    </div>
+  </section>
+
+  <!-- Lore page -->
+  <section class="page" id="lore-page">
+    <h2>Lore</h2>
+    <div style="padding:12px;background:var(--panel);border-radius:10px;border:1px solid rgba(255,255,255,0.03)">
+      <p>Placeholder lore sections. Replace with full text. You can split into subtopics — History, Magic, Plates & Origins.</p>
+    </div>
+  </section>
+
+  <!-- Category pages (heroes/villains/side) -->
+  <section class="page" id="heroes-page">
+    <h2>Heroes</h2>
+    <div class="grid" id="heroes-grid"></div>
+  </section>
+
+  <section class="page" id="villains-page">
+    <h2>Villains</h2>
+    <div class="grid" id="villains-grid"></div>
+  </section>
+
+  <section class="page" id="side-page">
+    <h2>Side Characters</h2>
+    <div class="grid" id="side-grid"></div>
+  </section>
+
+  <!-- Character detail -->
+  <section class="page" id="detail-page">
+    <button class="small-btn" id="back-btn">⬅ Back</button>
+    <div class="detail" id="detail"></div>
+  </section>
+
+  <!-- Minions list page -->
+  <section class="page" id="minions-page">
+    <button class="small-btn" id="back-btn-2">⬅ Back</button>
+    <h2>Minions</h2>
+    <div id="minions-list"></div>
+  </section>
+
+</main>
+
+<footer>Made with ❤️ — placeholder assets. Palette: black, crimson, pastel yellow.</footer>
+
+  </div>  <script>
+    /* ------------------ Data (placeholder data structure) ------------------ */
+    const DATA = {
+      heroes: [
+        {id:'h1',name:'Solaris',forms:1,role:'Leader',bio:'A valiant plate-bearer. Creator is hidden among heroes.'},
+        {id:'h2',name:'Lunaria',forms:1,role:'Scout',bio:'Graceful and cunning.'},
+        {id:'h3',name:'Terran',forms:1,role:'Guardian',bio:'Grounded and steadfast.'},
+        {id:'h4',name:'Aeris',forms:1,role:'Windblade',bio:'Swift and playful.'},
+        {id:'h5',name:'Nyx',forms:1,role:'Mystic',bio:'Shades and secrets.'},
+        // +6 additional heroes
+        {id:'h6',name:'Vesper',forms:1,role:'Strategist',bio:'A mastermind.'},
+        {id:'h7',name:'Iris',forms:1,role:'Healer',bio:'Warm and gentle.'},
+        {id:'h8',name:'Ember',forms:1,role:'Blaze',bio:'Hotheaded but loyal.'},
+        {id:'h9',name:'Glacia',forms:1,role:'Frost',bio:'Calm and precise.'},
+        {id:'h10',name:'Rift',forms:1,role:'Rogue',bio:'Mischievous wanderer.'},
+        // Last hero is the creator / hidden with alternate forms (4 forms)
+        {id:'h11',name:'The Maker',forms:4,role:'Creator',bio:'The enigmatic creator. Has multiple forms.'}
+      ],
+
+      side: [
+        {id:'s1',name:'Bree',bio:'Innkeeper and friend.'},
+        {id:'s2',name:'Moss',bio:'Cartographer.'},
+        {id:'s3',name:'Quill',bio:'Archivist.'},
+        {id:'s4',name:'Fawn',bio:'Messenger.'}
+      ],
+
+      villains: [
+        {id:'v1',name:'Obsidian Lord',forms:1,bio:'A harbinger of shadow.',minions:{count:10,heads:4}},
+        {id:'v2',name:'The Tri-brother',forms:1,bio:'Three brothers who act as one.',minions:{count:3,joined:true}},
+        {id:'v3',name:'Null Empress',forms:1,bio:'Void and silence.'},
+        {id:'v4',name:'The Ruiner',forms:1,bio:'Wreaker of havoc.'},
+        {id:'v5',name:'Crimson Duchess',forms:2,bio:'Two-faced noble. Has a partner (gf).',partner:'v5_gf'},
+        {id:'v6',name:'Lord Khander',forms:1,bio:'Leader with three subordinate villains.',minions:{villainMinions:['v2','v3']} }
+      ],
+
+      minions: {
+        v1: Array.from({length:10}).map((_,i)=>({id:`v1m${i+1}`,name:`Obsidian Minion ${i+1}`,isHead: i<4})),
+        v2: Array.from({length:3}).map((_,i)=>({id:`v2m${i+1}`,name:`Brother ${i+1}`,isHead:false})),
+        v5: [{id:'v5m1',name:'Duchess Guard 1'},{id:'v5m2',name:'Duchess Guard 2'}],
+        // v6 uses other villains as minions (v2,v3) — we will link to them
+      }
+    }
+
+    /* ------------------ Simple SPA helpers ------------------ */
+    function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');window.scrollTo({top:0,behavior:'smooth'})}
+
+    // Tabs
+    document.querySelectorAll('.tab').forEach(tab=>{
+      tab.addEventListener('click',()=>{
+        document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+        tab.classList.add('active');
+        const tabname=tab.dataset.tab;
+        if(tabname==='characters') loadCarousel('characters');
+        if(tabname==='places') loadCarousel('places');
+        if(tabname==='lore') loadCarousel('lore');
+      })
+    })
+
+    /* ------------------ Carousel logic ------------------ */
+    let slideIndex=0;
+    const slidesEl=document.getElementById('slides');
+    const dotsEl=document.getElementById('dots');
+
+    function loadCarousel(tab){
+      // Replace slides content per tab (placeholder images)
+      const slides = [];
+      if(tab==='characters'){
+        slides.push('Cast: Heroes & Villains — placeholder art');
+        slides.push('Feature: The Last Hero's forms (4) — placeholder');
+        slides.push('Villains showcase — placeholder');
+      } else if(tab==='places'){
+        slides.push('The Shattered Vale');slides.push('Crystal Borough');slides.push('Eclipse Pillar');
+      } else {
+        slides.push('Lore: Origins of Plates');slides.push('Lore: Soul Jam & Binding');slides.push('Lore: The Five & The Fall');
+      }
+      slidesEl.innerHTML = slides.map(s=>`<div class="slide"><div class="placeholder">${s}</div></div>`).join('');
+      // rebuild dots
+      dotsEl.innerHTML='';
+      slides.forEach((_,i)=>{const d=document.createElement('div');d.className='dot'+(i===0?' active':'');d.addEventListener('click',()=>goToSlide(i));dotsEl.appendChild(d)});
+      slideIndex=0;updateCarousel();
+    }
+
+    function updateCarousel(){
+      slidesEl.style.transform = `translateX(${-slideIndex*100}%)`;
+      Array.from(dotsEl.children).forEach((d,i)=>d.classList.toggle('active',i===slideIndex));
+    }
+    function goToSlide(i){slideIndex=i;updateCarousel();}
+
+    // init
+    loadCarousel('characters');
+
+    /* ------------------ Category buttons to pages ------------------ */
+    document.getElementById('open-heroes').addEventListener('click',()=>{renderHeroes();showPage('heroes-page')});
+    document.getElementById('open-villains').addEventListener('click',()=>{renderVillains();showPage('villains-page')});
+    document.getElementById('open-side').addEventListener('click',()=>{renderSide();showPage('side-page')});
+
+    /* ------------------ Rendering grids ------------------ */
+    function makeCard(item,kind){
+      const el = document.createElement('div');el.className='card';
+      el.innerHTML = `<div class="img">Placeholder art — ${item.name}</div><div class="meta"><div class="name-overlay">${item.name}</div></div>`;
+      el.addEventListener('click',()=>openDetail(kind,item.id));
+      return el;
+    }
+
+    function renderHeroes(){
+      const container=document.getElementById('heroes-grid');container.innerHTML='';DATA.heroes.forEach(h=>container.appendChild(makeCard(h,'hero')));
+    }
+    function renderVillains(){
+      const container=document.getElementById('villains-grid');container.innerHTML='';DATA.villains.forEach(v=>container.appendChild(makeCard(v,'villain')));
+    }
+    function renderSide(){
+      const container=document.getElementById('side-grid');container.innerHTML='';DATA.side.forEach(s=>container.appendChild(makeCard(s,'side')));
+    }
+
+    /* ------------------ Detail view ------------------ */
+    document.getElementById('back-btn').addEventListener('click',()=>{showPage('home-page')});
+    document.getElementById('back-btn-2').addEventListener('click',()=>{showPage('villains-page')});
+
+    function openDetail(kind,id){
+      const detail = document.getElementById('detail');
+      let item;
+      if(kind==='hero') item = DATA.heroes.find(h=>h.id===id);
+      if(kind==='villain') item = DATA.villains.find(h=>h.id===id);
+      if(kind==='side') item = DATA.side.find(h=>h.id===id);
+      if(!item) return;
+
+      // Build detail HTML
+      const forms = item.forms || 1;
+      let artSection = `<div class="hero-art" id="detail-art">Placeholder art — ${item.name}</div>`;
+      if(forms>1){
+        // slider controls
+        artSection = `
+          <div style="width:100%">
+            <div class="hero-art" id="detail-art">Form 1 — ${item.name}</div>
+            <div class="controls">
+              <button class="small-btn" id="prev-form">◀</button>
+              <div style="align-self:center;color:var(--muted)">Form <span id="form-index">1</span> / ${forms}</div>
+              <button class="small-btn" id="next-form">▶</button>
+            </div>
+          </div>`;
+      }
+
+      let extra='';
+      if(kind==='villain' && item.minions){
+        extra += `<div style="margin-top:12px"><button class="small-btn" id="view-minions">View Minions (${item.minions.count || (item.minions.villainMinions?item.minions.villainMinions.length:0) || 0})</button></div>`;
+      }
+      if(kind==='villain' && item.partner){
+        extra += `<div style="margin-top:8px;color:var(--muted)">Partner: ${item.partner} (placeholder)</div>`;
+      }
+
+      detail.innerHTML = `
+        <div class="hero-top">
+          ${artSection}
+          <div class="info">
+            <h2>${item.name}</h2>
+            <div style="opacity:0.85;margin-bottom:8px">Role: ${item.role||'—'}</div>
+            <div style="opacity:0.9">${item.bio||'No bio yet.'}</div>
+            ${extra}
+          </div>
+        </div>
+      `;
+
+      // Show page
+      showPage('detail-page');
+
+      // form cycling
+      if(forms>1){
+        let idx=1;
+        const artEl = document.getElementById('detail-art');
+        const idxEl = document.getElementById('form-index');
+        document.getElementById('prev-form').addEventListener('click',()=>{idx = idx>1?idx-1:forms; artEl.textContent = `Form ${idx} — ${item.name}`; idxEl.textContent=idx});
+        document.getElementById('next-form').addEventListener('click',()=>{idx = idx<forms?idx+1:1; artEl.textContent = `Form ${idx} — ${item.name}`; idxEl.textContent=idx});
+      }
+
+      // minions handler
+      const vm = document.getElementById('view-minions');
+      if(vm){
+        vm.addEventListener('click',()=>{
+          openMinions(id);
+        })
+      }
+    }
+
+    /* ------------------ Minions page ------------------ */
+    function openMinions(villainId){
+      // Show minions for a villain
+      const minionsList = document.getElementById('minions-list');
+      minionsList.innerHTML='';
+      const v = DATA.villains.find(x=>x.id===villainId);
+      if(!v) return;
+      const title = document.createElement('h3');title.textContent = `Minions of ${v.name}`;minionsList.appendChild(title);
+
+      // If villain references other villains as minions
+      if(v.minions && v.minions.villainMinions){
+        const info = document.createElement('div');info.style.marginTop='10px';info.innerHTML = '<div style="opacity:0.9">This villain uses other villains as lieutenants. Click to view them:</div>';
+        minionsList.appendChild(info);
+        v.minions.villainMinions.forEach(id=>{
+          const vil = DATA.villains.find(x=>x.id===id);
+          if(vil){
+            const card = document.createElement('div');card.className='minion';card.textContent = vil.name + ' (villain lieutenant)';card.style.cursor='pointer';card.addEventListener('click',()=>openDetail('villain',vil.id));minionsList.appendChild(card);
+          }
+        })
+      }
+
+      // If simple minion array exists
+      if(DATA.minions[villainId]){
+        const wrap = document.createElement('div');wrap.className='minions';
+        DATA.minions[villainId].forEach(m=>{
+          const mEl = document.createElement('div');mEl.className='minion';mEl.innerHTML = `<strong>${m.name}</strong><div style="opacity:0.8">ID: ${m.id}</div>`; if(m.isHead){const tag=document.createElement('div');tag.style.color='var(--crimson)';tag.textContent='head minion';mEl.appendChild(tag)}
+          wrap.appendChild(mEl);
+        });
+        minionsList.appendChild(wrap);
+      }
+
+      showPage('minions-page');
+    }
+
+    /* ------------------ Initial draws (home) ------------------ */
+    renderHeroes();renderVillains();renderSide();
+
+    // clicking a character from characters page should show all characters (simple)
+    document.getElementById('characters-grid').appendChild(document.createElement('div'));
+
+    // small UX: clicking site logo returns home
+    document.querySelector('.logo').addEventListener('click',()=>{showPage('home-page')});
+
+  </script></body>
+</html>
