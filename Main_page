@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Plates of Fate — Eeveelution AU</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f3ff;
+    --card:#fff;
+    --muted:#9a8fb6;
+    --accent:#ffd6a5; /* soft pastel */
+    --text:#2b2a33;
+    --light-yellow: #fff7b2; /* fave light yellow */
+    --glass: rgba(255,255,255,0.6);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    font-family:'Poppins',system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+    background: linear-gradient(180deg,#f9f7ff 0%, #fffefb 100%);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    padding:28px;
+  }
+
+  /* header */
+  .site {
+    max-width:1100px;
+    margin:0 auto;
+  }
+  header {
+    display:flex;
+    gap:18px;
+    align-items:center;
+    margin-bottom:20px;
+  }
+  .logo {
+    width:96px;height:96px;
+    border-radius:14px;
+    background-image:url(''); /* <-- PLACE LOGO URL HERE */
+    background-size:cover;
+    background-position:center;
+    border:4px solid rgba(255,255,255,0.6);
+    box-shadow: 0 6px 20px rgba(120,110,160,0.12);
+  }
+  .title {
+    display:flex;flex-direction:column;
+  }
+  .title h1{
+    margin:0;font-size:1.6rem; letter-spacing:0.6px;
+  }
+  .title p{margin:4px 0 0;color:var(--muted);font-size:0.95rem}
+
+  /* top columns & slider */
+  .top {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:18px;
+    align-items:start;
+    margin-bottom:22px;
+  }
+  .about {
+    background:var(--glass);
+    border-radius:14px;
+    padding:18px;
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 18px rgba(150,130,180,0.06);
+  }
+  .about h2{margin:0 0 8px;font-size:1.1rem}
+  .cols {
+    display:flex;
+    gap:12px;
+    flex-direction:column;
+  }
+  .col {
+    background:var(--card);
+    border-radius:12px;
+    padding:12px;
+    box-shadow: 0 6px 14px rgba(120,110,160,0.04);
+  }
+  .col h3{font-size:0.95rem;margin:0 0 8px;color:var(--muted)}
+  .col p{margin:0;font-size:0.9rem;color:#5b5666}
+
+  /* simple image slider for places/characters/lore */
+  .slider {
+    position:relative;
+    height:160px;
+    overflow:hidden;
+    border-radius:10px;
+    margin-top:10px;
+  }
+  .slides {
+    display:flex;
+    height:100%;
+    transition:transform 400ms ease;
+  }
+  .slide {
+    min-width:100%;
+    height:100%;
+    background-size:cover;
+    background-position:center;
+  }
+  .slider .nav {
+    position:absolute;
+    bottom:8px;left:50%;
+    transform:translateX(-50%);
+    display:flex;gap:8px;
+  }
+  .dot {
+    width:10px;height:10px;border-radius:50%;background:rgba(0,0,0,0.12);
+    cursor:pointer;
+  }
+  .dot.active{background:var(--accent)}
+
+  /* categories (heroes/villains/side) */
+  .categories {
+    display:flex;
+    gap:12px;
+    margin-bottom:18px;
+    flex-wrap:wrap;
+  }
+  .cat {
+    flex:1 1 200px;
+    background:linear-gradient(180deg, #ffffff, #fff8f0);
+    border-radius:12px;
+    padding:12px;
+    min-width:200px;
+    cursor:pointer;
+    box-shadow: 0 8px 20px rgba(150,120,160,0.06);
+    transition:transform 180ms ease, box-shadow 180ms;
+  }
+  .cat:hover{transform:translateY(-6px); box-shadow: 0 14px 30px rgba(150,120,160,0.09)}
+  .cat h3{margin:0 0 6px;color:var(--muted)}
+  .cat p{margin:0;color:#6b6570;font-size:0.92rem}
+
+  /* gallery modal */
+  .modal {
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;
+    background:rgba(10,7,18,0.46);z-index:80;padding:28px;
+  }
+  .modal.open{display:flex}
+  .modal .panel{
+    width:min(1000px,96%);max-height:90vh;overflow:auto;background:#fff;border-radius:12px;padding:18px;
+  }
+  .panel .panel-head{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;
+  }
+  .panel h2{margin:0}
+  .close-btn{background:#eee;border:none;padding:8px 10px;border-radius:8px;cursor:pointer}
+
+  /* cards grid */
+  .cards {
+    display:grid;
+    grid-template-columns: repeat(auto-fill,minmax(140px,1fr));
+    gap:12px;
+  }
+  .card {
+    position:relative;
+    height:180px;border-radius:10px;overflow:hidden;
+    background:#eee;
+    display:flex;align-items:end;justify-content:center;
+    cursor:pointer;
+    transition:transform 160ms ease, box-shadow 160ms;
+  }
+  .card:hover{transform:translateY(-6px); box-shadow: 0 12px 24px rgba(50,40,80,0.08)}
+  .card .img{
+    position:absolute;inset:0;background-size:cover;background-position:center;filter:brightness(0.95);
+  }
+  .card .overlay {
+    position:absolute;inset:0;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.35));
+    opacity:0;transition:opacity 160ms;
+  }
+  .card:hover .overlay{opacity:1}
+  .card .name {
+    position:relative; z-index:2;padding:8px 10px;width:100%;
+    color:var(--light-yellow);
+    text-align:center;font-weight:700;text-shadow:0 4px 18px rgba(0,0,0,0.45);
+    background:linear-gradient(90deg,rgba(255,255,255,0.02),rgba(255,255,255,0.02));
+  }
+
+  /* hidden creator card style */
+  .mystery{
+    filter:blur(2px) grayscale(0.2); position:relative;
+  }
+  .mystery .name{color:rgba(255,255,255,0.9)}
+  .reveal-hint{font-size:0.8rem;color:var(--muted);margin-top:8px;text-align:center}
+
+  /* forms carousel inside modal */
+  .form-carousel {position:relative;margin-top:12px}
+  .form-view {height:340px;border-radius:10px;overflow:hidden;background:#fafafa;display:flex;align-items:center;justify-content:center}
+  .form-img{width:100%;height:100%;background-size:contain;background-repeat:no-repeat;background-position:center}
+  .form-controls {display:flex;gap:8px;margin-top:8px;justify-content:center}
+  .mini-btn{padding:8px 12px;border-radius:8px;border:none;background:#f2f2f6;cursor:pointer}
+
+  /* minion list */
+  .minions-grid{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+  .minion {width:110px;height:110px;border-radius:8px;overflow:hidden;position:relative}
+  .minion .mimg{width:100%;height:100%;background-size:cover;background-position:center}
+  .minion .mname{position:absolute;bottom:0;left:0;right:0;padding:6px;text-align:center;background:rgba(0,0,0,0.45);color:var(--light-yellow);font-size:12px}
+
+  /* small footer */
+  footer{margin-top:22px;text-align:center;color:var(--muted);font-size:0.9rem}
+  @media (max-width:800px){
+    .top{grid-template-columns:1fr}
+    .categories{flex-direction:column}
+  }
+</style>
+</head>
+<body>
+<div class="site">
+  <header>
+    <div class="logo" id="logo"></div>
+    <div class="title">
+      <h1>Plates of Fate</h1>
+      <p>An Eeveelution AU — characters, places & fateplates</p>
+    </div>
+  </header>
+
+  <section class="top">
+    <div class="about">
+      <h2>About</h2>
+      <p>
+        Plates of Fate follows a band of heroes, shadowy villains, and curious side-characters in a world shaped by mystical plates.
+        Each character carries a plate that guides their destiny — and sometimes, they change it. Slide through featured imagery to get a feel for the world.
+      </p>
+
+      <div style="margin-top:12px;font-size:0.9rem;color:var(--muted)">Quick tips: Click a category to explore its characters. Hover cards to reveal names. Villains lead to their minions.</div>
+    </div>
+
+    <div class="cols">
+      <div class="col">
+        <h3>Characters</h3>
+        <p>Heroes, Villains, & Side Characters — each has art, lore and forms (where applicable).</p>
+
+        <div class="slider" data-slider="places">
+          <div class="slides" id="places-slides">
+            <div class="slide" style="background-image:url('');"></div> <!-- PUT_IMAGE_URL_HERE -->
+            <div class="slide" style="background-image:url('');"></div>
+            <div class="slide" style="background-image:url('');"></div>
+          </div>
+          <div class="nav" id="places-dots"></div>
+        </div>
+      </div>
+
+      <div class="col">
+        <h3>Places & Lore</h3>
+        <p>Ancient plate shrines, bustling towns, hidden paths — each place has ties to the plates and character destinies.</p>
+
+        <div class="slider" data-slider="lore">
+          <div class="slides" id="lore-slides">
+            <div class="slide" style="background-image:url('');"></div>
+            <div class="slide" style="background-image:url('');"></div>
+            <div class="slide" style="background-image:url('');"></div>
+          </div>
+          <div class="nav" id="lore-dots"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="categories">
+      <div class="cat" data-open="heroes">
+        <h3>Heroes</h3>
+        <p>5 + 6 heroes (main & extended). Find the hidden creator among them...</p>
+      </div>
+      <div class="cat" data-open="villains">
+        <h3>Villains</h3>
+        <p>6 core villains and their minions — some have special forms.</p>
+      </div>
+      <div class="cat" data-open="side">
+        <h3>Side Characters</h3>
+        <p>3–4 memorable side characters that spice things up.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>Made with cookies 🍪 and pastel energy. Replace placeholders with your art & text!</footer>
+</div>
+
+<!-- Modal for galleries / character view -->
+<div class="modal" id="modal">
+  <div class="panel" role="dialog" aria-modal="true">
+    <div class="panel-head">
+      <h2 id="panel-title">Gallery</h2>
+      <div>
+        <button class="close-btn" id="closeModal">Close</button>
+      </div>
+    </div>
+
+    <div id="panel-body">
+      <!-- dynamic content here -->
+      <div class="cards" id="cards-container"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Character detail modal for single character (forms carousel, description, minions) -->
+<div class="modal" id="charModal">
+  <div class="panel">
+    <div class="panel-head">
+      <h2 id="char-title">Character</h2>
+      <div>
+        <button class="close-btn" id="closeChar">Close</button>
+      </div>
+    </div>
+    <div id="char-body">
+      <!-- will populate -->
+      <div id="char-desc" style="color:#4c4556"></div>
+
+      <div class="form-carousel" id="formCarousel" style="display:none">
+        <div class="form-view" id="formView">
+          <div class="form-img" id="formImg" style="background-image:url('')"></div>
+        </div>
+        <div class="form-controls">
+          <button class="mini-btn" id="prevForm">Prev</button>
+          <button class="mini-btn" id="nextForm">Next</button>
+        </div>
+      </div>
+
+      <div id="minionsSection" style="display:none">
+        <h4 style="margin-top:12px">Minions</h4>
+        <div class="minions-grid" id="minionsGrid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ---------------------------
+  DATA: customize names/images here
+  Replace 'PUT_IMAGE_URL_HERE' strings with real image URLs for each character/form/minion
+----------------------------*/
+
+const data = {
+  heroes: [
+    { id:'h1', name:'Auroraeon', img:'PUT_IMAGE_URL_HERE', desc:'A brave eeveelike hero.', forms:[] },
+    { id:'h2', name:'Solflare', img:'PUT_IMAGE_URL_HERE', desc:'Warm and witty guardian.', forms:[] },
+    { id:'h3', name:'Tidegleam', img:'PUT_IMAGE_URL_HERE', desc:'Calm strategist of tides.', forms:[] },
+    { id:'h4', name:'Brambleon', img:'PUT_IMAGE_URL_HERE', desc:'Forest-savvy protector.', forms:[] },
+    { id:'h5', name:'Zephyria', img:'PUT_IMAGE_URL_HERE', desc:'Swift windcaller.', forms:[] },
+    // extended heroes (the +6)
+    { id:'h6', name:'Lunarys', img:'PUT_IMAGE_URL_HERE', desc:'Moonlit tactician.', forms:[] },
+    { id:'h7', name:'Cinderpup', img:'PUT_IMAGE_URL_HERE', desc:'Hotheaded fire friend.', forms:[] },
+    { id:'h8', name:'Glacielle', img:'PUT_IMAGE_URL_HERE', desc:'Icy calm and collected.', forms:[] },
+    { id:'h9', name:'Floracrest', img:'PUT_IMAGE_URL_HERE', desc:'Herbal healer.', forms:[] },
+    { id:'h10', name:'Voltique', img:'PUT_IMAGE_URL_HERE', desc:'Spark of inspiration.', forms:[] },
+    // the creator - hidden among heroes. This one has multiple forms (4 forms)
+    { id:'creator', name:'???', realName:'The Creator', img:'PUT_IMAGE_URL_HERE', desc:'Hidden creator of plates. Click to reveal forms.', hidden:true, forms:[
+      'PUT_IMAGE_URL_HERE','PUT_IMAGE_URL_HERE','PUT_IMAGE_URL_HERE','PUT_IMAGE_URL_HERE'
+    ]}
+  ],
+  side: [
+    { id:'s1', name:'Shopkeep Marn', img:'PUT_IMAGE_URL_HERE', desc:'Runs a cozy shop.'},
+    { id:'s2', name:'Courier Pip', img:'PUT_IMAGE_URL_HERE', desc:'Delivers plates (sometimes late).'},
+    { id:'s3', name:'Archivist Ly', img:'PUT_IMAGE_URL_HERE', desc:'Keeper of lore.'},
+    { id:'s4', name:'Festivalian', img:'PUT_IMAGE_URL_HERE', desc:'Local performer.'}
+  ],
+  villains: [
+    { id:'v1', name:'Lord Umbra', img:'PUT_IMAGE_URL_HERE', desc:'First villain. Commands minions.', minions:[
+        { id:'v1m1', name:'Head A', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m2', name:'Head B', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m3', name:'Head C', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m4', name:'Minion D', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m5', name:'Minion E', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m6', name:'Minion F', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m7', name:'Minion G', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m8', name:'Minion H', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m9', name:'Minion I', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v1m10', name:'Minion J', img:'PUT_IMAGE_URL_HERE' }
+      ]
+    },
+    // 2nd villain: actually 3 brothers as a trio - 3 minions
+    { id:'v2', name:'The Tri-Brood', img:'PUT_IMAGE_URL_HERE', desc:'Three brothers acting as a single villainous unit.', minions:[
+        { id:'v2m1', name:'Brother 1', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v2m2', name:'Brother 2', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v2m3', name:'Brother 3', img:'PUT_IMAGE_URL_HERE' }
+      ]
+    },
+    { id:'v3', name:'Abyssal Queen', img:'PUT_IMAGE_URL_HERE', desc:'No minions.'},
+    { id:'v4', name:'The Silent Knot', img:'PUT_IMAGE_URL_HERE', desc:'No minions.'},
+    // 5th villain has a girlfriend (special note) AND has 2 forms
+    { id:'v5', name:'Fateshear', img:'PUT_IMAGE_URL_HERE', desc:'Two forms. Has a girlfriend ally.', forms:[
+        'PUT_IMAGE_URL_HERE','PUT_IMAGE_URL_HERE'
+      ], gf:{ name:'Lilyshade', img:'PUT_IMAGE_URL_HERE' }
+    },
+    // 6th villain: 3 villains are his minions (those are the v2 set / referencing)
+    { id:'v6', name:'Lord Hex', img:'PUT_IMAGE_URL_HERE', desc:'Rules through 3 puppet villains.', minions:[
+        { id:'v6m1', name:'Puppet A', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v6m2', name:'Puppet B', img:'PUT_IMAGE_URL_HERE' },
+        { id:'v6m3', name:'Puppet C', img:'PUT_IMAGE_URL_HERE' }
+      ]
+    }
+  ]
+};
+
+/* ---------------------------
+  UI Logic
+----------------------------*/
+const modal = document.getElementById('modal');
+const charModal = document.getElementById('charModal');
+const cardsContainer = document.getElementById('cards-container');
+const panelTitle = document.getElementById('panel-title');
+const panelBody = document.getElementById('panel-body');
+const closeModal = document.getElementById('closeModal');
+const closeChar = document.getElementById('closeChar');
+
+document.querySelectorAll('.cat').forEach(el=>{
+  el.addEventListener('click', ()=> openCategory(el.dataset.open));
+});
+
+closeModal.addEventListener('click', ()=> modal.classList.remove('open'));
+closeChar.addEventListener('click', ()=> charModal.classList.remove('open'));
+
+// sliders setup (two sliders for places and lore)
+function setupSlider(rootName){
+  const container = document.querySelector(`[data-slider="${rootName}"]`);
+  if(!container) return;
+  const slides = container.querySelector('.slides');
+  const dots = container.querySelector('.nav');
+  const count = slides.children.length;
+  let idx = 0;
+  // create dots
+  for(let i=0;i<count;i++){
+    const d = document.createElement('div');
+    d.className='dot'+(i===0?' active':'');
+    d.addEventListener('click', ()=>{ idx=i; update(); });
+    dots.appendChild(d);
+  }
+  function update(){
+    slides.style.transform = `translateX(-${idx*100}%)`;
+    Array.from(dots.children).forEach((n,i)=> n.classList.toggle('active', i===idx));
+  }
+  setInterval(()=>{
+    idx = (idx+1)%count; update();
+  },4000);
+}
+setupSlider('places');
+setupSlider('lore');
+
+/* Category open -> populate cards */
+function openCategory(cat){
+  cardsContainer.innerHTML = '';
+  panelTitle.textContent = cat.charAt(0).toUpperCase() + cat.slice(1);
+  let list = [];
+  if(cat === 'heroes') list = data.heroes;
+  if(cat === 'villains') list = data.villains;
+  if(cat === 'side') list = data.side;
+
+  list.forEach(item=>{
+    const card = document.createElement('div'); card.className='card';
+    const imgdiv = document.createElement('div'); imgdiv.className='img';
+    imgdiv.style.backgroundImage = item.img ? `url(${item.img})` : `linear-gradient(135deg,#f0e6ff,#fff7e6)`;
+    const overlay = document.createElement('div'); overlay.className='overlay';
+    const name = document.createElement('div'); name.className='name';
+    // hidden/creator handling
+    if(item.hidden){
+      card.classList.add('mystery');
+      name.textContent = '???';
+    } else {
+      name.textContent = item.name;
+    }
+
+    card.appendChild(imgdiv);
+    card.appendChild(overlay);
+    card.appendChild(name);
+    // hover reveal for mystery: clicking reveals modal with forms carousel (creator)
+    card.addEventListener('click', (e)=>{
+      if(item.hidden){
+        // reveal creator details
+        openCharacter(item);
+      } else {
+        openCharacter(item);
+      }
+    });
+
+    cardsContainer.appendChild(card);
+  });
+
+  modal.classList.add('open');
+}
+
+/* Open single character */
+const charTitle = document.getElementById('char-title');
+const charDesc = document.getElementById('char-desc');
+const formCarousel = document.getElementById('formCarousel');
+const formImg = document.getElementById('formImg');
+const prevForm = document.getElementById('prevForm');
+const nextForm = document.getElementById('nextForm');
+const minionsSection = document.getElementById('minionsSection');
+const minionsGrid = document.getElementById('minionsGrid');
+
+let currentForms = [], formIndex = 0;
+function openCharacter(item){
+  charModal.classList.add('open');
+  charTitle.textContent = item.realName ? item.realName : item.name;
+  charDesc.textContent = item.desc || 'No description yet. Add one in the data array.';
+
+  // forms handling
+  currentForms = Array.isArray(item.forms) ? item.forms : [];
+  formIndex = 0;
+  if(currentForms.length){
+    formCarousel.style.display = 'block';
+    formImg.style.backgroundImage = `url('${currentForms[formIndex]}')`;
+  } else if (item.img){
+    formCarousel.style.display = 'block';
+    formImg.style.backgroundImage = `url('${item.img}')`;
+  } else {
+    formCarousel.style.display = 'none';
+  }
+
+  // minions handling
+  if(item.minions && item.minions.length){
+    minionsSection.style.display = 'block';
+    minionsGrid.innerHTML = '';
+    item.minions.forEach(m=>{
+      const box = document.createElement('div'); box.className='minion';
+      const mimg = document.createElement('div'); mimg.className='mimg';
+      mimg.style.backgroundImage = m.img ? `url(${m.img})` : '';
+      const mname = document.createElement('div'); mname.className='mname';
+      mname.textContent = m.name;
+      box.appendChild(mimg); box.appendChild(mname);
+      box.addEventListener('click', ()=> {
+        // open a card for the minion (simple)
+        openCharacter({ name:m.name, img:m.img, desc:'Minion of ' + (item.name||item.realName) });
+      });
+      minionsGrid.appendChild(box);
+    });
+  } else {
+    minionsSection.style.display = 'none';
+    minionsGrid.innerHTML = '';
+  }
+
+  // special: if villains have gf info, show link
+  if(item.gf){
+    const gfBox = document.createElement('div');
+    gfBox.style.marginTop='10px';
+    gfBox.innerHTML = `<strong>Partner:</strong> ${item.gf.name}`;
+    minionsGrid.parentNode.insertBefore(gfBox, minionsGrid.nextSibling);
+  }
+}
+
+/* forms carousel controls */
+prevForm.addEventListener('click', ()=> {
+  if(!currentForms.length) return;
+  formIndex = (formIndex - 1 + currentForms.length) % currentForms.length;
+  formImg.style.backgroundImage = `url('${currentForms[formIndex]}')`;
+});
+nextForm.addEventListener('click', ()=> {
+  if(!currentForms.length) return;
+  formIndex = (formIndex + 1) % currentForms.length;
+  formImg.style.backgroundImage = `url('${currentForms[formIndex]}')`;
+});
+
+/* miscellaneous - clicking outside modal closes it */
+modal.addEventListener('click', (e)=>{
+  if(e.target === modal) modal.classList.remove('open');
+});
+charModal.addEventListener('click', (e)=>{
+  if(e.target === charModal) charModal.classList.remove('open');
+});
+
+/* ---------- Populate a small preview grid on page load (show hero thumbnail hero cards for quick browsing) ---------- */
+function makePreview(){
+  const container = document.createElement('div');
+  container.style.marginTop='18px';
+  container.className='col';
+  const head = document.createElement('h3'); head.textContent='Quick Hero Preview';
+  const hint = document.createElement('div'); hint.className='reveal-hint';
+  hint.textContent='(Click "Heroes" to view full gallery. Creator is hidden among heroes.)';
+  const grid = document.createElement('div'); grid.className='cards';
+  // show first 6 heroes including the hidden creator as a blurred card
+  const preview = data.heroes.slice(0,6);
+  preview.forEach(item=>{
+    const c = document.createElement('div'); c.className='card';
+    const img = document.createElement('div'); img.className='img';
+    img.style.backgroundImage = item.img ? `url(${item.img})` : '';
+    const name = document.createElement('div'); name.className='name';
+    name.textContent = item.hidden ? '???' : item.name;
+    if(item.hidden) c.classList.add('mystery');
+    c.appendChild(img); c.appendChild(name);
+    c.addEventListener('click', ()=> openCharacter(item));
+    grid.appendChild(c);
+  });
+  container.appendChild(head);
+  container.appendChild(grid);
+  container.appendChild(hint);
+  document.querySelector('.site').insertBefore(container, document.querySelector('footer'));
+}
+makePreview();
+
+/* ----- small helper: place logo background if user changes it dynamically (optional) ---- */
+function setLogo(url){
+  const el = document.getElementById('logo');
+  if(!url) return;
+  el.style.backgroundImage = `url('${url}')`;
+}
+// setLogo('PUT_IMAGE_URL_HERE');
+
+/* ------------------------------
+  Notes to you:
+  - Replace every 'PUT_IMAGE_URL_HERE' with your own images.
+  - Add real descriptions to the data arrays.
+  - To add characters, push objects to the arrays in data.
+  - The creator character is flagged with hidden:true and contains forms[] (4 images).
+  - Villains with forms[] will show a carousel in the character modal.
+  - Clicking villain minions opens simple cards for each minion.
+------------------------------- */
+
+</script>
+</body>
+</html>
